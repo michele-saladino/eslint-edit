@@ -5,15 +5,20 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm tsc && node dist"
+    "dev": "pnpm tsc && node dist",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.18.3",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.3",
-    "typescript": "^6.0.3"
+    "globals": "^17.6.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.1"
   },
   "dependencies": {
     "eslint": "^10.5.0"
