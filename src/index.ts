@@ -1,7 +1,6 @@
 import type { ESLint } from "eslint";
 import { runEslint } from "./eslint.js";
 import { getChangedLines, type FileChange } from "./git.js";
-import * as t from "./newWrongFile.js";
 
 async function checkEslintOnChangedLines() {
   let problems: ESLint.LintResult[] = [];

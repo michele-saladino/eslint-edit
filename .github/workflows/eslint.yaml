@@ -1,0 +1,38 @@
+name: ESLint changed lines
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm tsc
+
+      - name: Run check and fail if output > 0
+        run: |
+          output=$(node dist | tail -n 1)
+          echo "Number of new problems: $output"
+          if [ "$output" -gt 0 ]; then
+            echo "::error::Found $output new lint problem(s) on changed lines"
+            exit 1
+          fi
