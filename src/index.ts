@@ -1,6 +1,7 @@
 import type { ESLint } from "eslint";
 import { runEslint } from "./eslint.js";
 import { getChangedLines, type FileChange } from "./git.js";
+import * as t from "./newWrongFile.js";
 
 async function checkEslintOnChangedLines() {
   let problems: ESLint.LintResult[] = [];
@@ -9,7 +10,7 @@ async function checkEslintOnChangedLines() {
 
   try {
     const res = await runEslint();
-    problems = res.results;
+    problems = res.results.filter((f) => f.errorCount);
   } catch (error) {
     console.error(error);
     return;
@@ -24,7 +25,9 @@ async function checkEslintOnChangedLines() {
 
   // check if any error regards something in the changed lines
   for (const problem of problems) {
-    const changedFile = changedFiles.find((c) => c.file === problem.filePath);
+    const changedFile = changedFiles.find((c) =>
+      problem.filePath.endsWith(c.file),
+    );
 
     if (changedFile) {
       const problemMatch = problem.messages.some((p) =>
@@ -36,7 +39,7 @@ async function checkEslintOnChangedLines() {
     }
   }
 
-  console.log(newProblems);
+  console.log(newProblems.length);
 }
 
 checkEslintOnChangedLines();
