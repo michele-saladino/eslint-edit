@@ -1,4 +1,4 @@
-function thisFunctionIsUsedInsideTheFile() {
+function thisFunctionIsUsedInsideTheFile(): number {
   return 1;
 }
 
