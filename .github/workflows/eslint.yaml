@@ -30,9 +30,13 @@ jobs:
 
       - name: Run check and fail if output > 0
         run: |
-          output=$(node dist | tail -n 1)
-          echo "Number of new problems: $output"
-          if [ "$output" -gt 0 ]; then
-            echo "::error::Found $output new lint problem(s) on changed lines"
+          # Tee so the ::error:: annotation lines still reach the runner's
+          # stdout (GitHub parses them from there), while we capture the
+          # trailing count to decide pass/fail.
+          node dist | tee output.log
+          count=$(tail -n 1 output.log)
+          echo "Number of new problems: $count"
+          if [ "$count" -gt 0 ]; then
+            echo "::error::Found $count new lint problem(s) on changed lines"
             exit 1
           fi
