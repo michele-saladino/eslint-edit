@@ -17,7 +17,7 @@ jobs:
       - name: Check if version changed
         id: check
         run: |
-          PREV=$(git show HEAD~1:package.json | node -p "require('/dev/stdin').version")
+          PREV=$(git show HEAD~1:package.json | jq -r '.version')
           CURR=$(node -p "require('./package.json').version")
           if [ "$PREV" != "$CURR" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
