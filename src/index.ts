@@ -21,6 +21,7 @@ function annotate(filePath: string, message: Linter.LintMessage): void {
 }
 
 async function checkEslintOnChangedLines(): Promise<number> {
+  console.log("starting");
   const { base, head } = resolveRefs(process.argv.slice(2));
 
   let problems: ESLint.LintResult[];
@@ -45,7 +46,9 @@ async function checkEslintOnChangedLines(): Promise<number> {
 
   // Keep only the problems that fall on lines changed in this PR.
   for (const problem of problems) {
-    const changedFile = changedFiles.find((c) => problem.filePath.endsWith(c.file));
+    const changedFile = changedFiles.find((c) =>
+      problem.filePath.endsWith(c.file),
+    );
 
     if (changedFile) {
       const matchingMessages = problem.messages.filter((p) =>
