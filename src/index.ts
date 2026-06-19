@@ -21,7 +21,6 @@ function annotate(filePath: string, message: Linter.LintMessage): void {
 }
 
 async function checkEslintOnChangedLines(): Promise<number> {
-  console.log("starting");
   const { base, head } = resolveRefs(process.argv.slice(2));
 
   let problems: ESLint.LintResult[];

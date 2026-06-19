@@ -1,6 +1,6 @@
 {
   "name": "eslint-pr",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Run ESLint but only report problems on the lines changed in a pull request.",
   "type": "module",
   "bin": {
@@ -29,6 +29,10 @@
     "ci",
     "github-actions"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michele-saladino/eslint-edit"
+  },
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.18.3",
