@@ -1,6 +1,6 @@
 {
   "name": "eslint-pr",
-  "version": "1.0.01",
+  "version": "1.0.2",
   "description": "Run ESLint but only report problems on the lines changed in a pull request.",
   "type": "module",
   "bin": {
