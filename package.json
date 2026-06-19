@@ -1,26 +1,47 @@
 {
   "name": "eslint-pr",
   "version": "1.0.0",
-  "description": "",
+  "description": "Run ESLint but only report problems on the lines changed in a pull request.",
   "type": "module",
-  "main": "index.js",
+  "bin": {
+    "eslint-pr": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "dev": "pnpm tsc && node dist",
+    "build": "tsc",
+    "dev": "tsc && node dist",
+    "prepublishOnly": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "keywords": [],
+  "keywords": [
+    "eslint",
+    "lint",
+    "pull-request",
+    "diff",
+    "ci",
+    "github-actions"
+  ],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.18.3",
+  "peerDependencies": {
+    "eslint": ">=9"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.3",
+    "eslint": "^10.5.0",
     "globals": "^17.6.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.1"
-  },
-  "dependencies": {
-    "eslint": "^10.5.0"
+    "typescript-eslint": "^8.61.1",
+    "vitest": "^4.1.9"
   }
 }

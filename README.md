@@ -24,34 +24,58 @@ The CI step reads that trailing count and fails the job if it is greater than ze
 
 ## Usage
 
-### In CI
-
-The workflow in [.github/workflows/eslint.yaml](.github/workflows/eslint.yaml) runs automatically on every `pull_request`. It checks out the repo with full history (`fetch-depth: 0`, needed for the diff), installs dependencies, builds, then runs the check:
+The tool is published as an executable named `eslint-pr`. It emits annotations
+to stdout and **exits with code 1 when there are new problems on changed lines**,
+so no output parsing is needed — the CI step fails on its own.
 
 ```bash
-node dist | tee output.log
-count=$(tail -n 1 output.log)   # last line is the number of new problems
-[ "$count" -gt 0 ] && exit 1    # fail the job if there are any
+eslint-pr                       # diff origin/<PR base> (or origin/main) against HEAD
+eslint-pr --base origin/develop # override the base ref
+eslint-pr --head HEAD~1         # override the head ref
 ```
 
-### Locally
+In GitHub Actions the base ref is read automatically from `GITHUB_BASE_REF`.
+
+### In another repo's workflow
+
+Add `eslint-pr` as a dev dependency (it lints against **that repo's own**
+ESLint config — `eslint` is a peer dependency), then run it on pull requests:
+
+```yaml
+name: ESLint changed lines
+on: pull_request
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # full history is needed for the diff
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npx eslint-pr        # fails the job if there are new problems
+```
+
+The bundled workflow at [.github/workflows/eslint.yaml](.github/workflows/eslint.yaml) is the equivalent check for this repo itself.
+
+### Locally (developing this package)
 
 ```bash
 pnpm install
-pnpm dev        # tsc + node dist
-```
-
-`pnpm dev` diffs `HEAD` against `origin/main` by default (see `ChangedLinesOptions` in [src/git.ts](src/git.ts)) and prints any new problems plus the trailing count.
-
-Other scripts:
-
-```bash
+pnpm build      # tsc -> dist
+pnpm dev        # build + run against origin/main..HEAD
+pnpm test       # vitest run
 pnpm lint       # eslint .
 pnpm lint:fix   # eslint . --fix
 ```
 
 ## Requirements
 
-- Node.js 24+
-- pnpm (`packageManager` is pinned in [package.json](package.json))
-- A git checkout with access to the base ref (`origin/main`) for the diff.
+- Node.js 18+
+- ESLint 9+ in the consuming project (peer dependency), with a flat config
+  (`eslint.config.js`) that ESLint can discover from the working directory.
+- A git checkout with full history and access to the base ref for the diff
+  (`fetch-depth: 0` in GitHub Actions).

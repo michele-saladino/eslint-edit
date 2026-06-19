@@ -6,7 +6,7 @@ import globals from "globals";
 export default tseslint.config(
   {
     // Don't lint build output or dependencies.
-    ignores: ["dist/**", "node_modules/**", "eslint.config.js"],
+    ignores: ["dist/**", "node_modules/**", "eslint.config.js", "test/**"],
   },
   eslint.configs.recommended,
   // Strictest type-aware rule sets typescript-eslint ships.

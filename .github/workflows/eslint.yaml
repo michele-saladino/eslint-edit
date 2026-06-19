@@ -25,17 +25,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm tsc
+        run: pnpm build
 
-      - name: Run check and fail if output > 0
-        run: |
-          # Tee so the ::error:: annotation lines still reach the runner's
-          # stdout (GitHub parses them from there), while we capture the
-          # trailing count to decide pass/fail.
-          node dist | tee output.log
-          count=$(tail -n 1 output.log)
-          echo "Number of new problems: $count"
-          if [ "$count" -gt 0 ]; then
-            echo "::error::Found $count new lint problem(s) on changed lines"
-            exit 1
-          fi
+      - name: Test
+        run: pnpm test
+
+      # Prints ::error::/::warning:: annotations to stdout and exits non-zero
+      # when there are new problems on changed lines, failing the job.
+      - name: Lint changed lines
+        run: node dist
